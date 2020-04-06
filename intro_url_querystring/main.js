@@ -1,14 +1,19 @@
-import { createServer } from 'http';
-import { parse } from 'url'; // permet de manipuler les url
+const http = require('http');
+const url = require('url'); // permet de manipuler les url
+const querystring = require('querystring'); // permet de manipuler les paramètres d'url
 
 
-const webServer = createServer(function(requete, reponse) {
+const webServer = http.createServer(function(requete, reponse) {
 
-    let req = parse(requete.url); // analyse de l'url de la requête
+    let req = url.parse(requete.url); // analyse de l'url de la requête
 
     let path = req.pathname; // récupération de la partie "pathname" de l'url (partie se trouvant après localhost:8000) correspondant au chemin demandé sur le serveur
 
-    console.log(path); // affichage du chemin demandé
+    console.log(path); // affichage du chemin demandé dans la console
+
+    let params = querystring.parse(req.query) // accès au querystring de l'url
+
+    console.log(params);
 
     var str = ''; // contiendra le contenu de la réponse
 
