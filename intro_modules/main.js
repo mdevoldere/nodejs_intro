@@ -1,11 +1,7 @@
-const readline = require('readline');
-
+const express = require('express');
 const ets = require('./ets.js');
 
-const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout,
-});
+const app = express();
 
 
 const employees = {
@@ -15,16 +11,83 @@ const employees = {
     mike: new ets.Developer('Mike'),
 };
 
-console.log(employees);
-console.log(employees.jack.__proto__);
 
-console.log(employees.sandy.__proto__);
-console.log(employees.sandy.name);
 
-console.log(employees.mike.__proto__);
-console.log(employees.mike.name);
-
-rl.question('Choisissez un employé ', (answer) => {
-    console.log('vous avez saisi: ' + answer);
-    rl.close();
+app.get('/', function(requete, reponse) {
+    //console.log(requete);
+    reponse.setHeader('Content-Type', 'application/json; charset=utf-8');
+    reponse.send('{"result": "Hello"}');
 });
+
+
+app.get('/employees', function(requete, reponse) {
+    reponse.setHeader('Content-Type', 'application/json; charset=utf-8');
+    let json = JSON.stringify(employees);
+    console.log(json);
+    reponse.send(json);
+});
+
+// http://localhost:8000/employee/?nom=jack
+app.get('/employee', function(requete, reponse) {
+    
+    let nom = requete.query.nom;
+
+    let employees_index = Object.keys(employees);
+
+    reponse.setHeader('Content-Type', 'application/json; charset=utf-8');
+
+    if(employees_index.includes(nom)) {
+        let mon_employe = employees[nom]; 
+        console.log(mon_employe);
+        var json = JSON.stringify(mon_employe);
+    }
+    else {
+        console.log('non trouvé');
+        var json = '{"result": false}';
+    }
+
+    console.log(nom);
+    console.log(employees_index);
+    
+    //console.log(json);
+    reponse.send(json);
+});
+
+// http://localhost:8000/employee?nom=jack&vue=articles&id_article=3
+// http://localhost:8000/user/jack/articles/3
+app.get('/user/:nom/articles/:id', function(requete, reponse) {
+
+});
+
+
+// http://localhost:8000/user/jack
+app.get('/user/:nom', function(requete, reponse) {
+    
+    let nom = requete.params.nom;
+
+    let employees_index = Object.keys(employees);
+
+    reponse.setHeader('Content-Type', 'application/json; charset=utf-8');
+
+    if(employees_index.includes(nom)) {
+        let mon_employe = employees[nom]; 
+        console.log(mon_employe);
+        var json = JSON.stringify(mon_employe);
+    }
+    else {
+        console.log('non trouvé');
+        var json = '{"result": false}';
+    }
+
+    console.log(nom);
+    console.log(employees_index);
+    
+    //console.log(json);
+    reponse.send(json);
+});
+
+
+
+
+
+app.listen(8000);
